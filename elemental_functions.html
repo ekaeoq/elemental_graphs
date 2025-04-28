@@ -9,61 +9,101 @@
     body {
       margin: 0;
       overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+    #instructions {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: black;
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 5px;
+      border-radius: 5px;
+    }
+    canvas {
+      position: absolute;
+      z-index: 1000;
     }
   </style>
 </head>
 <body>
+  <div id="instructions">
+    <p><strong>Controls:</strong></p>
+    <ul>
+      <li>Rotate: Two-finger swipe or left-click and drag</li>
+      <li>Zoom: Pinch with two fingers or scroll wheel</li>
+      <li>Pan: Two-finger swipe with Command key or right-click and drag</li>
+    </ul>
+  </div>
   <script>
+    let dragCount = 0;
+    let wheelCount = 0;
+
     function setup() {
       createCanvas(windowWidth, windowHeight, WEBGL);
+      textFont('Arial');
+      camera(0, -100, 100, 0, 0, 0, 0, 1, 0);
+      perspective(PI/3, width/height, 10, 10000);
+    }
+
+    function mouseDragged() {
+      dragCount++;
+      return true;
+    }
+
+    function mouseWheel() {
+      wheelCount++;
+      return true;
     }
 
     function draw() {
-      background(255); // White background
-      orbitControl(); // Enables rotation, zooming, and panning with the mouse
-      camera(0, -200, 200, 0, 0, 0, 0, 1, 0); // Initial camera position
+      background(255);
+	orbitControl(1, 1, 0.005);
 
-      // Draw grid lines (light gray, thin)
+      push();
+      ortho();
+      resetMatrix();
+      fill(0);
+      textSize(16);
+      text("Drag count: " + dragCount, 10, 20);
+      text("Wheel count: " + wheelCount, 10, 20);
+      pop();
+
       stroke(200);
       strokeWeight(1);
-      // XY plane at z=0
       for (let i = -50; i <= 50; i += 10) {
         line(-50, i, 0, 50, i, 0);
         line(i, -50, 0, i, 50, 0);
       }
-      // XZ plane at y=0
       for (let i = -50; i <= 50; i += 10) {
         line(-50, 0, i, 50, 0, i);
         line(i, 0, -50, i, 0, 50);
       }
-      // YZ plane at x=0
       for (let i = -50; i <= 50; i += 10) {
         line(0, -50, i, 0, 50, i);
         line(0, i, -50, 0, i, 50);
       }
 
-      // Draw axes (colored, thicker)
       strokeWeight(2);
-      stroke(255, 0, 0); // X-axis in red
+      stroke(255, 0, 0);
       line(-50, 0, 0, 50, 0, 0);
-      stroke(0, 255, 0); // Y-axis in green
+      stroke(0, 255, 0);
       line(0, -50, 0, 0, 50, 0);
-      stroke(0, 0, 255); // Z-axis in blue
+      stroke(0, 0, 255);
       line(0, 0, -50, 0, 0, 50);
 
-      // Define the graphs
       let graphs = [
-        { power: 2, color: [0, 0, 255], zOffset: -60 }, // Blue
-        { power: 4, color: [0, 0, 0], zOffset: -40 },   // Black
-        { power: 6, color: [255, 0, 0], zOffset: -20 }, // Red
-        { power: 1, color: [0, 0, 255], zOffset: 20 },  // Blue
-        { power: 3, color: [0, 0, 0], zOffset: 40 },    // Black
-        { power: 5, color: [255, 0, 0], zOffset: 60 }   // Red
+        { power: 2, color: [0, 0, 255], zOffset: -60 },
+        { power: 4, color: [0, 0, 0], zOffset: -40 },
+        { power: 6, color: [255, 0, 0], zOffset: -20 },
+        { power: 1, color: [0, 0, 255], zOffset: 20 },
+        { power: 3, color: [0, 0, 0], zOffset: 40 },
+        { power: 5, color: [255, 0, 0], zOffset: 60 }
       ];
 
-      let desiredMax = 50; // Maximum y-value after scaling
+      let desiredMax = 50;
 
-      // Plot each graph
       for (let graph of graphs) {
         let scale = desiredMax / Math.pow(2, graph.power);
         push();
@@ -87,3 +127,4 @@
   </script>
 </body>
 </html>
+
