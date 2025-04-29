@@ -1,0 +1,217 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive 3D Graphs</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+    #instructions {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: black;
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 5px;
+      border-radius: 5px;
+    }
+    canvas {
+      position: absolute;
+      z-index: 1000;
+    }
+    button {
+      position: absolute;
+      left: 10px;
+      padding: 5px 10px;
+      font-size: 14px;
+      cursor: pointer;
+      z-index: 2000;
+    }
+    #xyPlaneButton { top: 100px; }
+    #set1Button { top: 140px; }
+    #set2Button { top: 180px; }
+    #set3Button { top: 220px; }
+  </style>
+</head>
+<body>
+  <div id="instructions">
+    <p><strong>Controls:</strong></p>
+    <ul>
+      <li>Rotate: Two-finger swipe or left-click and drag</li>
+      <li>Zoom: Pinch with two fingers or scroll wheel</li>
+      <li>Pan: Two-finger swipe with Command key or right-click and drag</li>
+    </ul>
+  </div>
+  <button id="xyPlaneButton" onclick="toggleXYPlane()">Toggle X-Y Plane</button>
+  <button id="set1Button" onclick="toggleSet1()">Toggle Set 1 (x, x³, x⁵)</button>
+  <button id="set2Button" onclick="toggleSet2()">Toggle Set 2 (1/x², 1/x⁴, 1/x⁶)</button>
+  <button id="set3Button" onclick="toggleSet3()">Toggle Set 3 (1/x, 1/x³, 1/x⁵)</button>
+  <script>
+    let dragCount = 0;
+    let wheelCount = 0;
+    let showOnlyXY = false;
+    let showSet1 = true;
+    let showSet2 = true;
+    let showSet3 = true;
+
+    function toggleXYPlane() {
+      showOnlyXY = !showOnlyXY;
+    }
+
+    function toggleSet1() {
+      showSet1 = !showSet1;
+    }
+
+    function toggleSet2() {
+      showSet2 = !showSet2;
+    }
+
+    function toggleSet3() {
+      showSet3 = !showSet3;
+    }
+
+    function setup() {
+      createCanvas(windowWidth, windowHeight, WEBGL);
+      textFont('Arial');
+      camera(0, -100, 100, 0, 0, 0, 0, 1, 0);
+      perspective(PI / 3, width / height, 10, 10000);
+    }
+
+    function mouseDragged() {
+      dragCount++;
+      return true;
+    }
+
+    function mouseWheel() {
+      wheelCount++;
+      return true;
+    }
+
+    function draw() {
+      background(255);
+
+      if (showOnlyXY) {
+        camera(0, 0, 100, 0, 0, 0, 0, 1, 0);
+        let aspect = width / height;
+        if (aspect > 1) {
+          let halfWidth = 60 * aspect;
+          ortho(-halfWidth, halfWidth, -60, 60, 0, 1000);
+        } else {
+          let halfHeight = 60 / aspect;
+          ortho(-60, 60, -halfHeight, halfHeight, 0, 1000);
+        }
+        stroke(200);
+        strokeWeight(1);
+        for (let i = -60; i <= 60; i += 20) {
+          line(-60, i, 0, 60, i, 0);
+          line(i, -60, 0, i, 60, 0);
+        }
+        drawGraphs();
+      } else {
+        perspective(PI / 3, width / height, 10, 10000);
+        orbitControl(1, 1, 0.005);
+        stroke(200);
+        strokeWeight(1);
+        // Draw x-y plane grid
+        for (let i = -60; i <= 60; i += 20) {
+          line(-60, i, 0, 60, i, 0);
+          line(i, -60, 0, i, 60, 0);
+        }
+        // Draw x-z plane grid
+        for (let i = -60; i <= 60; i += 20) {
+          line(-60, 0, i, 60, 0, i);
+          line(i, 0, -60, i, 0, 60);
+        }
+        // Draw y-z plane grid
+        for (let i = -60; i <= 60; i += 20) {
+          line(0, -60, i, 0, 60, i);
+          line(0, i, -60, 0, i, 60);
+        }
+        // Draw axes
+        strokeWeight(2);
+        stroke(135, 206, 235);
+        line(-50, 0, 0, 50, 0, 0);
+        stroke(65, 105, 225);
+        line(0, -50, 0, 0, 50, 0);
+        stroke(100, 149, 237);
+        line(0, 0, -50, 0, 0, 50);
+		//tu nacratamo grafe btw ***
+        drawGraphs();
+      }
+
+      push();
+      ortho();
+      resetMatrix();
+      fill(0);
+      textSize(16);
+      text("Drag count: " + dragCount, 10, 20);
+      text("Wheel count: " + wheelCount, 10, 40);
+      pop();
+    }
+
+    function drawGraphs() {
+      let graphSets = [
+        {
+          show: showSet1,
+          graphs: [
+            { func: x => x, color: [0, 0, 255], zOffset: -60, scale: 5 }, // y=x, max|y|=10, scale=50/10=5
+            { func: x => Math.pow(x, 3), color: [0, 0, 0], zOffset: -40, scale: 0.05 }, // y=x^3, max|y|=1000, scale=50/1000=0.05
+            { func: x => Math.pow(x, 5), color: [255, 0, 0], zOffset: -20, scale: 0.0005 } // y=x^5, max|y|=100000, scale=50/100000=0.0005
+          ]
+        },
+        {
+          show: showSet2,
+          graphs: [
+            { func: x => (x !== 0 ? 1 / Math.pow(x, 2) : 0), color: [0, 0, 255], zOffset: 20, scale: 12.5 }, // y=1/x^2, max|y|=4 at x=0.5, scale=50/4=12.5
+            { func: x => (x !== 0 ? 1 / Math.pow(x, 4) : 0), color: [0, 0, 0], zOffset: 40, scale: 3.125 }, // y=1/x^4, max|y|=16 at x=0.5, scale=50/16=3.125
+            { func: x => (x !== 0 ? 1 / Math.pow(x, 6) : 0), color: [255, 0, 0], zOffset: 60, scale: 0.781 } // y=1/x^6, max|y|=64 at x=0.5, scale=50/64≈0.781
+          ]
+        },
+        {
+          show: showSet3,
+          graphs: [
+            { func: x => (x !== 0 ? 1 / x : 0), color: [0, 0, 255], zOffset: -60, scale: 25 }, // y=1/x, max|y|=2 at x=0.5, scale=50/2=25
+            { func: x => (x !== 0 ? 1 / Math.pow(x, 3) : 0), color: [0, 0, 0], zOffset: -40, scale: 6.25 }, // y=1/x^3, max|y|=8 at x=0.5, scale=50/8=6.25
+            { func: x => (x !== 0 ? 1 / Math.pow(x, 5) : 0), color: [255, 0, 0], zOffset: -20, scale: 1.5625 } // y=1/x^5, max|y|=32 at x=0.5, scale=50/32≈1.5625
+          ]
+        }
+      ];
+
+      for (let set of graphSets) {
+        if (!set.show) continue;
+        for (let graph of set.graphs) {
+          push();
+          translate(0, 0, graph.zOffset);
+          stroke(graph.color[0], graph.color[1], graph.color[2]);
+          strokeWeight(2);
+          noFill();
+          // Negative x segment
+          beginShape();
+          for (let x = -10; x <= -0.01; x += 0.1) {
+            let y = graph.func(x);
+            vertex(x * 5, y * graph.scale, 0);
+          }
+          endShape();
+          // Positive x segment
+          beginShape();
+          for (let x = 0.01; x <= 10; x += 0.1) {
+            let y = graph.func(x);
+            vertex(x * 5, y * graph.scale, 0);
+          }
+          endShape();
+          pop();
+        }
+      }
+    }
+
+    function windowResized() {
+      resizeCanvas(windowWidth, windowHeight);
+    }
+  </script>
+</body>
+</html>
