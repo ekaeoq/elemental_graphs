@@ -61,9 +61,9 @@
     let dragCount = 0;
     let wheelCount = 0;
     let showOnlyXY = false;
-    let showSet1 = true;
-    let showSet2 = true;
-    let showSet3 = true;
+    let showSet1 = false;
+    let showSet2 = false;
+    let showSet3 = false;
     let showSet4 = true;
     let showSet5 = true;
     let showSet6 = true;
@@ -234,11 +234,11 @@
           push();
           translate(0, 0, graph.zOffset);
           stroke(graph.color[0], graph.color[1], graph.color[2]);
-          strokeWeight(2);
+          strokeWeight(3);
           noFill();
           if (graph.segments.includes('negative')) {
             beginShape();
-            for (let x = -10; x <= -0.01; x += 0.1) {
+            for (let x = -10; x <= -0.001; x += 0.1) {
               let y = graph.func(x);
               if (!isNaN(y)) {
                 vertex(x * 5, y * graph.scale, 0);
@@ -248,7 +248,7 @@
           }
           if (graph.segments.includes('positive')) {
             beginShape();
-            for (let x = 0.01; x <= 10; x += 0.1) {
+            for (let x = 0.001; x <= 10; x += 0.1) {
               let y = graph.func(x);
               if (!isNaN(y)) {
                 vertex(x * 5, y * graph.scale, 0);
