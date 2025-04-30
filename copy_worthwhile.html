@@ -1,0 +1,204 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive 3D Graphs - Duplicated</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: Arial, sans-serif;
+    }
+    .main-container {
+      width: 800px;
+      height: 600px;
+      position: relative;
+      margin: 20px 0;
+    }
+    .instructions {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: black;
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 5px;
+      border-radius: 5px;
+      z-index: 2000;
+    }
+    button {
+      position: absolute;
+      left: 10px;
+      padding: 5px 10px;
+      font-size: 14px;
+      cursor: pointer;
+      z-index: 2000;
+    }
+    .xyPlaneButton { top: 100px; }
+    .set1Button { top: 140px; }
+    .sketch-container {
+      width: 800px;
+      height: 600px;
+      position: relative;
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <!-- First Window -->
+  <div id="main-container1" class="main-container">
+    <div class="instructions">
+      <p><strong>Controls:</strong></p>
+      <ul>
+        <li>Rotate: Left-click and drag</li>
+        <li>Zoom: Scroll wheel</li>
+        <li>Pan: Right-click and drag</li>
+      </ul>
+    </div>
+    <button class="xyPlaneButton" onclick="p1.toggleXYPlane()">Toggle X-Y Plane</button>
+    <button class="set1Button" onclick="p1.toggleSet1()">Toggle Set 1 (x, x³, x⁵)</button>
+    <div id="sketch-container1" class="sketch-container"></div>
+  </div>
+
+  <!-- Second Window (Duplicate) -->
+  <div id="main-container2" class="main-container">
+    <div class="instructions">
+      <p><strong>Controls:</strong></p>
+      <ul>
+        <li>Rotate: Left-click and drag</li>
+        <li>Zoom: Scroll wheel</li>
+        <li>Pan: Right-click and drag</li>
+      </ul>
+    </div>
+    <button class="xyPlaneButton" onclick="p2.toggleXYPlane()">Toggle X-Y Plane</button>
+    <button class="set1Button" onclick="p2.toggleSet1()">Toggle Set 1 (x, x³, x⁵)</button>
+    <div id="sketch-container2" class="sketch-container"></div>
+  </div>
+
+  <script>
+    let sketch = function(p) {
+      p.showOnlyXY = false;
+      p.showSet1 = false;
+      p.dragCount = 0;
+      p.wheelCount = 0;
+
+      p.toggleXYPlane = function() {
+        p.showOnlyXY = !p.showOnlyXY;
+      };
+
+      p.toggleSet1 = function() {
+        p.showSet1 = !p.showSet1;
+      };
+
+      p.setup = function() {
+        let canvas = p.createCanvas(800, 600, p.WEBGL);
+        p.textFont('Arial');
+        p.camera(0, -100, 100, 0, 0, 0, 0, 1, 0);
+        p.perspective(p.PI / 3, p.width / p.height, 10, 10000);
+      };
+
+      p.mouseDragged = function() {
+        p.dragCount++;
+        return true;
+      };
+
+      p.mouseWheel = function() {
+        p.wheelCount++;
+        return true;
+      };
+
+      p.draw = function() {
+        p.background(255);
+
+        if (p.showOnlyXY) {
+          p.camera(0, 0, 100, 0, 0, 0, 0, 1, 0);
+          let aspect = p.width / p.height;
+          if (aspect > 1) {
+            let halfWidth = 60 * aspect;
+            p.ortho(-halfWidth, halfWidth, -60, 60, 0, 1000);
+          } else {
+            let halfHeight = 60 / aspect;
+            p.ortho(-60, 60, -halfHeight, halfHeight, 0, 10000);
+          }
+          p.stroke(200);
+          p.strokeWeight(1);
+          for (let i = -60; i <= 60; i += 20) {
+            p.line(-60, i, 0, 60, i, 0);
+            p.line(i, -60, 0, i, 60, 0);
+          }
+          p.drawGraphs();
+        } else {
+          p.perspective(p.PI / 3, p.width / p.height, 10, 10000);
+          p.orbitControl(1, 1, 0.005);
+          p.stroke(200);
+          p.strokeWeight(1);
+          for (let i = -60; i <= 60; i += 20) {
+            p.line(-60, i, 0, 60, i, 0);
+            p.line(i, -60, 0, i, 60, 0);
+            p.line(-60, 0, i, 60, 0, i);
+            p.line(i, 0, -60, i, 0, 60);
+          }
+          p.strokeWeight(2);
+          p.stroke(135, 206, 235);
+          p.line(-50, 0, 0, 50, 0, 0);
+          p.stroke(65, 105, 225);
+          p.line(0, -50, 0, 0, 50, 0);
+          p.stroke(100, 149, 237);
+          p.line(0, 0, -50, 0, 0, 50);
+          p.drawGraphs();
+        }
+
+        p.push();
+        p.ortho();
+        p.resetMatrix();
+        p.fill(0);
+        p.textSize(16);
+        p.text("Drag count: " + p.dragCount, 10, 20);
+        p.text("Wheel count: " + p.wheelCount, 10, 40);
+        p.pop();
+      };
+
+      p.drawGraphs = function() {
+        if (p.showSet1) {
+          p.push();
+          p.stroke(0, 0, 255);
+          p.strokeWeight(3);
+          p.noFill();
+          p.beginShape();
+          for (let x = -10; x <= 10; x += 0.1) {
+            let y = x;
+            if (!isNaN(y)) p.vertex(x * 5, y * 5, -60);
+          }
+          p.endShape();
+          p.stroke(0, 0, 0);
+          p.beginShape();
+          for (let x = -10; x <= 10; x += 0.1) {
+            let y = Math.pow(x, 3);
+            if (!isNaN(y)) p.vertex(x * 5, y * 0.05, -40);
+          }
+          p.endShape();
+          p.stroke(255, 0, 0);
+          p.beginShape();
+          for (let x = -10; x <= 10; x += 0.1) {
+            let y = Math.pow(x, 5);
+            if (!isNaN(y)) p.vertex(x * 5, y * 0.0005, -20);
+          }
+          p.endShape();
+          p.pop();
+        }
+      };
+    };
+
+    let p1 = new p5(sketch, 'sketch-container1');
+    let p2 = new p5(sketch, 'sketch-container2');
+  </script>
+</body>
+</html>
