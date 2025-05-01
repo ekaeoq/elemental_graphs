@@ -1,5 +1,5 @@
 <html lang="en">
-<head>
+	<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Interactive 3D Graphs - Distinct Sets per Sketch</title>
@@ -87,9 +87,9 @@
     <button class="setButton2" onclick="p2.toggleSet(1)">Toggle Set 5 (2^x, e^x, 10^x, (1/2)^x)</button>
     <button class="setButton3" onclick="p2.toggleSet(2)">Toggle Set 6 (log2 x, ln x, log10 x, log_{1/2} x)</button>
     <div id="sketch-container2" class="sketch-container"></div>
-  </div> 
+  </div>
 
-  <!-- Thind, hopefully Window: Sets 3, 4, 5 -->
+  <!-- Third Window: Sets 3, 4, 5 -->
   <div id="main-container3" class="main-container">
     <div class="instructions">
       <p><strong>Controls:</strong></p>
@@ -106,50 +106,66 @@
     <div id="sketch-container3" class="sketch-container"></div>
   </div>
 
+  <div id="main-container4" class="main-container">
+    <div class="instructions">
+      <p><strong>Controls:</strong></p>
+      <ul>
+        <li>Rotate: Left-click and drag</li>
+        <li>Zoom: Scroll wheel</li>
+        <li>Pan: Right-click and drag</li>
+      </ul>
+    </div>
+    <button class="xyPlaneButton" onclick="p4.toggleXYPlane()">Toggle X-Y Plane</button>
+    <button class="setButton1" onclick="p4.toggleSet(0)">Toggle Set 4 (x^{1/3}, x^{1/5}, x^{1/7})</button>
+    <button class="setButton2" onclick="p4.toggleSet(1)">Toggle Set 5 (2^x, e^x, 10^x, (1/2)^x)</button>
+    <button class="setButton3" onclick="p4.toggleSet(2)">Toggle Set 6 (log2 x, ln x, log10 x, log_{1/2} x)</button>
+    <div id="sketch-container4" class="sketch-container"></div>
+  </div>
+
   <script>
     const graphSets = [
       {
         graphs: [
-          { func: x => x, color: [0, 0, 255], zOffset: -5, scale: -5, segments: ['negative', 'positive'] },
-          { func: x => Math.pow(x, 3), color: [0, 0, 0], zOffset: -10, scale: 0.05, segments: ['negative', 'positive'] },
-          { func: x => Math.pow(x, 5), color: [255, 0, 0], zOffset: -15, scale: 0.0005, segments: ['negative', 'positive'] }
+          { func: x => x, color: [0, 0, 255], zOffset: 0, scale: 5, segments: ['negative', 'positive'] },
+          { func: x => Math.pow(x, 3), color: [0, 0, 0], zOffset: 10, scale: 0.05, segments: ['negative', 'positive'] },
+          { func: x => Math.pow(x, 5), color: [255, 0, 0], zOffset: 20, scale: 0.0005, segments: ['negative', 'positive'] }
         ]
       },
       {
         graphs: [
-          { func: x => (x !== 0 ? 1 / Math.pow(x, 2) : 0), color: [0, 0, 255], zOffset: 5, scale: 12.5, segments: ['negative', 'positive'] },
+          { func: x => (x !== 0 ? 1 / Math.pow(x, 2) : 0), color: [0, 0, 255], zOffset: 0, scale: 12.5, segments: ['negative', 'positive'] },
           { func: x => (x !== 0 ? 1 / Math.pow(x, 4) : 0), color: [0, 0, 0], zOffset: 10, scale: 3.125, segments: ['negative', 'positive'] },
-          { func: x => (x !== 0 ? 1 / Math.pow(x, 6) : 0), color: [255, 0, 0], zOffset: 15, scale: 0.781, segments: ['negative', 'positive'] }
+          { func: x => (x !== 0 ? 1 / Math.pow(x, 6) : 0), color: [255, 0, 0], zOffset: 20, scale: 0.781, segments: ['negative', 'positive'] }
         ]
       },
       {
         graphs: [
-          { func: x => (x !== 0 ? 1 / x : 0), color: [0, 0, 255], zOffset: -60, scale: -25, segments: ['negative', 'positive'] },
-          { func: x => (x !== 0 ? 1 / Math.pow(x, 3) : 0), color: [0, 0, 0], zOffset: -30, scale: 6.25, segments: ['negative', 'positive'] },
-          { func: x => (x !== 0 ? 1 / Math.pow(x, 5) : 0), color: [255, 0, 0], zOffset: -35, scale: 1.5625, segments: ['negative', 'positive'] }
+          { func: x => (x !== 0 ? 1 / x : 0), color: [0, 0, 255], zOffset: 0, scale: 25, segments: ['negative', 'positive'] },
+          { func: x => (x !== 0 ? 1 / Math.pow(x, 3) : 0), color: [0, 0, 0], zOffset: 10, scale: 6.25, segments: ['negative', 'positive'] },
+          { func: x => (x !== 0 ? 1 / Math.pow(x, 5) : 0), color: [255, 0, 0], zOffset: 20, scale: 1.5625, segments: ['negative', 'positive'] }
         ]
       },
       {
         graphs: [
-          { func: x => Math.sign(x) * Math.pow(Math.abs(x), 1/3), color: [0, 0, 255], zOffset: 25, scale: 20, segments: ['negative', 'positive'] },
-          { func: x => Math.sign(x) * Math.pow(Math.abs(x), 1/5), color: [0, 0, 0], zOffset: 30, scale: 20, segments: ['negative', 'positive'] },
-          { func: x => Math.sign(x) * Math.pow(Math.abs(x), 1/7), color: [255, 0, 0], zOffset: 35, scale: 20, segments: ['negative', 'positive'] }
+          { func: x => Math.sign(x) * Math.pow(Math.abs(x), 1/3), color: [0, 0, 255], zOffset: 0, scale: 20, segments: ['negative', 'positive'] },
+          { func: x => Math.sign(x) * Math.pow(Math.abs(x), 1/5), color: [0, 0, 0], zOffset: 10, scale: 20, segments: ['negative', 'positive'] },
+          { func: x => Math.sign(x) * Math.pow(Math.abs(x), 1/7), color: [255, 0, 0], zOffset: 20, scale: 20, segments: ['negative', 'positive'] }
         ]
       },
       {
         graphs: [
-          { func: x => Math.pow(2, x), color: [0, 0, 255], zOffset: 45, scale: 0.05, segments: ['negative', 'positive'] },
-          { func: x => Math.exp(x), color: [0, 0, 0], zOffset: 50, scale: 0.002, segments: ['negative', 'positive'] },
-          { func: x => Math.pow(10, x), color: [255, 0, 0], zOffset: 55, scale: 0.000005, segments: ['negative', 'positive'] },
-          { func: x => Math.pow(0.5, x), color: [0, 255, 0], zOffset: 60, scale: 0.05, segments: ['negative', 'positive'] }
+          { func: x => Math.pow(2, x), color: [0, 0, 255], zOffset: 0, scale: 0.05, segments: ['negative', 'positive'] },
+          { func: x => Math.exp(x), color: [0, 0, 0], zOffset: 10, scale: 0.002, segments: ['negative', 'positive'] },
+          { func: x => Math.pow(10, x), color: [255, 0, 0], zOffset: 20, scale: 0.000005, segments: ['negative', 'positive'] },
+          { func: x => Math.pow(0.5, x), color: [0, 255, 0], zOffset: 30, scale: 0.05, segments: ['negative', 'positive'] }
         ]
       },
       {
         graphs: [
-          { func: x => (x > 0 ? Math.log2(x) : NaN), color: [0, 0, 255], zOffset: -45, scale: 10, segments: ['positive'] },
-          { func: x => (x > 0 ? Math.log(x) : NaN), color: [0, 0, 0], zOffset: -50, scale: 10, segments: ['positive'] },
-          { func: x => (x > 0 ? Math.log10(x) : NaN), color: [255, 0, 0], zOffset: -55, scale: 10, segments: ['positive'] },
-          { func: x => (x > 0 ? Math.log(x) / Math.log(0.5) : NaN), color: [0, 255, 0], zOffset: -60, scale: 10, segments: ['positive'] }
+          { func: x => (x > 0 ? Math.log2(x) : NaN), color: [0, 0, 255], zOffset: 0, scale: 10, segments: ['positive'] },
+          { func: x => (x > 0 ? Math.log(x) : NaN), color: [0, 0, 0], zOffset: 10, scale: 10, segments: ['positive'] },
+          { func: x => (x > 0 ? Math.log10(x) : NaN), color: [255, 0, 0], zOffset: 20, scale: 10, segments: ['positive'] },
+          { func: x => (x > 0 ? Math.log(x) / Math.log(0.5) : NaN), color: [0, 255, 0], zOffset: 30, scale: 10, segments: ['positive'] }
         ]
       }
     ];
@@ -172,7 +188,7 @@
         p.setup = function() {
           let canvas = p.createCanvas(800, 600, p.WEBGL);
           p.textFont('Arial');
-          p.camera(0, -100, 100, 0, 0, 0, 0, 1, 0);
+          p.camera(0, 0, 150, 0, 0, 0, 0, 1, 0);
           p.perspective(p.PI / 3, p.width / p.height, 10, 10000);
         };
 
@@ -199,6 +215,8 @@
               let halfHeight = 60 / aspect;
               p.ortho(-60, 60, -halfHeight, halfHeight, 0, 10000);
             }
+            p.push(); // -BITNO:ADDED: Start transformation block
+            p.rotateX(p.PI); // -BITNO: ADDED: Flip the scene vertically
             p.stroke(200);
             p.strokeWeight(1);
             for (let i = -60; i <= 60; i += 20) {
@@ -206,9 +224,12 @@
               p.line(i, -60, 0, i, 60, 0);
             }
             p.drawGraphs();
+            p.pop(); // ADDED: end
           } else {
             p.perspective(p.PI / 3, p.width / p.height, 10, 10000);
             p.orbitControl(1, 1, 0.005);
+            p.push(); // ISTO NA DRUGOJ STRANI:ADDED: Start transformation block
+            p.rotateX(p.PI); // DOK SE ROTIRA: ADDED: Flip the scene vertically
             p.stroke(200);
             p.strokeWeight(1);
             for (let i = -60; i <= 60; i += 20) {
@@ -225,6 +246,7 @@
             p.stroke(100, 149, 237);
             p.line(0, 0, -50, 0, 0, 50);
             p.drawGraphs();
+            p.pop(); // ADDED: end
           }
 
           p.push();
@@ -274,6 +296,8 @@
     let p1 = new p5(createSketch(graphSets.slice(0, 3)), 'sketch-container1');
     let p2 = new p5(createSketch(graphSets.slice(3, 6)), 'sketch-container2');
     let p3 = new p5(createSketch(graphSets.slice(3, 6)), 'sketch-container3');
+    let p4 = new p5(createSketch(graphSets.slice(3, 6)), 'sketch-container4');
   </script>
 </body>
 </html>
+
