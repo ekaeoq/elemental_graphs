@@ -188,7 +188,7 @@
         p.setup = function() {
           let canvas = p.createCanvas(800, 600, p.WEBGL);
           p.textFont('Arial');
-          p.camera(0, 0, 150, 0, 0, 0, 0, 1, 0);
+          p.camera(0, -15, 150, 0, 0, 0, 0, 1, 0);
           p.perspective(p.PI / 3, p.width / p.height, 10, 10000);
         };
 
@@ -292,9 +292,9 @@
         };
       };
     }
-
+	// the slice is important, because that's what taking the index of a graph set
     let p1 = new p5(createSketch(graphSets.slice(0, 3)), 'sketch-container1');
-    let p2 = new p5(createSketch(graphSets.slice(3, 6)), 'sketch-container2');
+    let p2 = new p5(createSketch(graphSets.slice(0, 3)), 'sketch-container2');
     let p3 = new p5(createSketch(graphSets.slice(3, 6)), 'sketch-container3');
     let p4 = new p5(createSketch(graphSets.slice(3, 6)), 'sketch-container4');
   </script>

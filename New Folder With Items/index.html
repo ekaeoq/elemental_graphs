@@ -1,0 +1,140 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive 3D Graphs - Distinct Sets per Sketch</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- First Window: Sets 0, 1, 2 -->
+  <div id="main-container1" class="main-container">
+    <div class="burger-menu">
+      <div class="burger-icon">&#9776;</div>
+      <div class="menu">
+        <button onclick="p1.toggleXYPlane()">Toggle X-Y Plane</button>
+        <button onclick="p1.toggleSet(0)">Toggle Set 1 (x, x³, x⁵)</button>
+        <button onclick="p1.toggleSet(1)">Toggle Set 2 (1/x², 1/x⁴, 1/x⁶)</button>
+        <button onclick="p1.toggleSet(2)">Toggle Set 3 (1/x, 1/x³, 1/x⁵)</button>
+      </div>
+    </div>
+    <div class="instructions">
+      <p><strong>Controls:</strong></p>
+      <ul>
+        <li>Rotate: Left-click and drag</li>
+        <li>Zoom: Scroll wheel</li>
+        <li>Pan: Right-click and drag</li>
+      </ul>
+    </div>
+    <div id="sketch-container1" class="sketch-container"></div>
+  </div>
+
+  <!-- Second Window: Sets 3, 4, 5 -->
+  <div id="main-container2" class="main-container">
+    <div class="burger-menu">
+      <div class="burger-icon">&#9776;</div>
+      <div class="menu">
+        <button onclick="p2.toggleXYPlane()">Toggle X-Y Plane</button>
+        <button onclick="p2.toggleSet(0)">Toggle Set 4 (x^{1/3}, x^{1/5}, x^{1/7})</button>
+        <button onclick="p2.toggleSet(1)">Toggle Set 5 (2^x, e^x, 10^x, (1/2)^x)</button>
+        <button onclick="p2.toggleSet(2)">Toggle Set 6 (log2 x, ln x, log10 x, log_{1/2} x)</button>
+      </div>
+    </div>
+    <div class="instructions">
+      <p><strong>Controls:</strong></p>
+      <ul>
+        <li>Rotate: Left-click and drag</li>
+        <li>Zoom: Scroll wheel</li>
+        <li>Pan: Right-click and drag</li>
+      </ul>
+    </div>
+    <div id="sketch-container2" class="sketch-container"></div>
+  </div>
+
+  <!-- Third Window: Sets 0, 1, 2 -->
+  <div id="main-container3" class="main-container">
+    <div class="burger-menu">
+      <div class="burger-icon">&#9776;</div>
+      <div class="menu">
+        <button onclick="p3.toggleXYPlane()">Toggle X-Y Plane</button>
+        <button onclick="p3.toggleSet(0)">Toggle Set 1 (x, x³, x⁵)</button>
+        <button onclick="p3.toggleSet(1)">Toggle Set 2 (1/x², 1/x⁴, 1/x⁶)</button>
+        <button onclick="p3.toggleSet(2)">Toggle Set 3 (1/x, 1/x³, 1/x⁵)</button>
+      </div>
+    </div>
+    <div class="instructions">
+      <p><strong>Controls:</strong></p>
+      <ul>
+        <li>Rotate: Left-click and drag</li>
+        <li>Zoom: Scroll wheel</li>
+        <li>Pan: Right-click and drag</li>
+      </ul>
+    </div>
+    <div id="sketch-container3" class="sketch-container"></div>
+  </div>
+
+  <!-- Fourth Window: Sets 3, 4, 5 -->
+  <div id="main-container4" class="main-container">
+    <div class="burger-menu">
+      <div class="burger-icon">&#9776;</div>
+      <div class="menu">
+        <button onclick="p4.toggleXYPlane()">Toggle X-Y Plane</button>
+        <button onclick="p4.toggleSet(0)">Toggle Set 4 (x^{1/3}, x^{1/5}, x^{1/7})</button>
+        <button onclick="p4.toggleSet(1)">Toggle Set 5 (2^x, e^x, 10^x, (1/2)^x)</button>
+        <button onclick="p4.toggleSet(2)">Toggle Set 6 (log2 x, ln x, log10 x, log_{1/2} x)</button>
+      </div>
+    </div>
+    <div class="instructions">
+      <p><strong>Controls:</strong></p>
+      <ul>
+        <li>Rotate: Left-click and drag</li>
+        <li>Zoom: Scroll wheel</li>
+        <li>Pan: Right-click and drag</li>
+      </ul>
+    </div>
+    <div id="sketch-container4" class="sketch-container"></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
