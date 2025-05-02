@@ -172,7 +172,7 @@ let p1 = new p5(createSketch(graphSets.slice(0, 3)), 'sketch-container1');
 let p2 = new p5(createSketch(graphSets.slice(3, 6)), 'sketch-container2');
 let p3 = new p5(createSketch(graphSets.slice(0, 3)), 'sketch-container3');
 let p4 = new p5(createSketch(graphSets.slice(3, 6)), 'sketch-container4');
-let p5_naming_prblem = new p5(createSketch(graphSets.slice(0, 3)), 'sketch-container5');
+let p5_issue = new p5(createSketch(graphSets.slice(0, 3)), 'sketch-container5');
 
 // Burger menu functionality
 document.querySelectorAll('.burger-icon').forEach(icon => {
