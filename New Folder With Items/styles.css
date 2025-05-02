@@ -12,8 +12,8 @@ body {
   position: relative;
   margin: 20px 0;
   background: #f0f0f0;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .instructions {
@@ -102,6 +102,8 @@ body {
 .sketch-container {
   width: 800px;
   height: 600px;
+  border-radius: 15px;
+  overflow: hidden;
   position: relative;
 }
 
