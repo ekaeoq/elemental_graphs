@@ -12,8 +12,8 @@ body {
   position: relative;
   margin: 20px 0;
   background: #f0f0f0;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .instructions {
@@ -38,30 +38,74 @@ body {
 .burger-icon {
   font-size: 24px;
   cursor: pointer;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  color: #333;
+  transition: background 0.3s ease;
+}
+
+.burger-icon:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
 }
 
 .menu {
-  display: none;
-  position: absolute;
+  position: absolute; 
+  width: 240px;
   top: 30px;
   right: 0;
-  background: white;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
   padding: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+}
+
+.menu-open {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .menu button {
+  width: 100%;
   display: block;
   margin: 5px 0;
-  padding: 5px 10px;
+  padding: 10px 35px;
   font-size: 14px;
   cursor: pointer;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  color: #333;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.menu button:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+.menu button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.3);
 }
 
 .sketch-container {
   width: 800px;
   height: 600px;
+  border-radius: 15px;
+  overflow: hidden;
   position: relative;
 }
 
